@@ -22,7 +22,9 @@ setup(
         'console_scripts': [
             'my_node = david_robot_arm_pkg.my_node:main',
             'controller_evdev_node = david_robot_arm_pkg.controller_test_node:main',
-            'receiver_node = david_robot_arm_pkg.receiver_node:main'
+            'receiver_node = david_robot_arm_pkg.receiver_node:main',
+            'keyboard_controll_node = david_robot_arm_pkg.keyboard_controll_node:main',
+            'servo_node = david_robot_arm_pkg.servo_node:main',
         ],
     },
 )
