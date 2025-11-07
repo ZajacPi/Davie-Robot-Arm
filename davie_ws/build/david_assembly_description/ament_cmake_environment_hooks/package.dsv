@@ -1,0 +1,4 @@
+source;share/david_assembly_description/local_setup.bash
+source;share/david_assembly_description/local_setup.dsv
+source;share/david_assembly_description/local_setup.sh
+source;share/david_assembly_description/local_setup.zsh

@@ -22,7 +22,7 @@ void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
 }
 
 void setup() {
-  Serial.begin(921600);              // explicit high baud
+  Serial.begin(115200);              // explicit high baud
   delay(2000);
   set_microros_transports();         // official example call
 
