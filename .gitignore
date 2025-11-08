@@ -8,6 +8,7 @@ davie_ws/log/
 davie_ws/src/build/
 davie_ws/src/install/
 davie_ws/src/log/
+
 # IDE
 .vscode/
 .idea/
