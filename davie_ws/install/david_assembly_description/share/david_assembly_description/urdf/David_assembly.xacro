@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<robot name="David_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="david_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:include filename="$(find David_assembly_description)/urdf/materials.xacro" />
-<xacro:include filename="$(find David_assembly_description)/urdf/David_assembly.trans" />
-<xacro:include filename="$(find David_assembly_description)/urdf/David_assembly.gazebo" />
+<xacro:include filename="$(find david_assembly_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find david_assembly_description)/urdf/david_assembly.trans" />
+<xacro:include filename="$(find david_assembly_description)/urdf/david_assembly.gazebo" />
 <link name="base_link">
   <inertial>
     <origin xyz="0.02496581862611542 1.258812630233752e-07 0.017611016251020108" rpy="0 0 0"/>
@@ -13,14 +13,14 @@
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -34,14 +34,14 @@
   <visual>
     <origin xyz="-0.107113 -0.009896 -0.03437" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin xyz="-0.107113 -0.009896 -0.03437" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -55,14 +55,14 @@
   <visual>
     <origin xyz="0.029 -0.00986 -0.09145" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin xyz="0.029 -0.00986 -0.09145" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -76,14 +76,14 @@
   <visual>
     <origin xyz="-0.041 -0.00986 -0.20331" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin xyz="-0.041 -0.00986 -0.20331" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
@@ -97,14 +97,14 @@
   <visual>
     <origin xyz="0.029 -0.00986 -0.31517" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
     <origin xyz="0.029 -0.00986 -0.31517" rpy="0 0 0"/>
     <geometry>
-      <mesh filename="package://David_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="package://david_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
