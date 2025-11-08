@@ -1,0 +1,9 @@
+<launch>
+
+<rosparam file="$(find david_urdf2_description)/launch/controller.yaml" command="load"/>
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="david_urdf2" args="joint2_position_controller joint3_position_controller joint4_position_controller joint1_position_controller joint5_position_controller joint_state_controller "/>
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  <remap from="/joint_states" to="/david_urdf2/joint_states"/>
+</node>
+
+</launch>

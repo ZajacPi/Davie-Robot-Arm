@@ -1,0 +1,222 @@
+<?xml version="1.0" ?>
+<robot name="david_urdf2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find david_urdf2_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find david_urdf2_description)/urdf/david_urdf2.trans" />
+<xacro:include filename="$(find david_urdf2_description)/urdf/david_urdf2.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.0001060788870038297 -0.01761951424927954 0.03196567044947301" rpy="0 0 0"/>
+    <mass value="0.1568210346188369"/>
+    <inertia ixx="0.000591" iyy="0.000205" izz="0.000599" ixy="-0.0" iyz="3.4e-05" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="axis1_1">
+  <inertial>
+    <origin xyz="-0.004400867412475207 0.0007166252179925832 0.015564868562479073" rpy="0 0 0"/>
+    <mass value="0.14468947560446446"/>
+    <inertia ixx="9e-05" iyy="0.000331" izz="0.00035" ixy="3e-06" iyz="-3e-06" ixz="1.1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 -0.0 -0.1252" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/axis1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 -0.0 -0.1252" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/axis1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm1_1">
+  <inertial>
+    <origin xyz="0.04046552623603066 -2.3106838842393285e-06 0.05483174300548285" rpy="0 0 0"/>
+    <mass value="0.13222977603489441"/>
+    <inertia ixx="0.000245" iyy="0.000352" izz="0.000134" ixy="-0.0" iyz="-0.0" ixz="-4.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.029 -0.00986 -0.16545" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.029 -0.00986 -0.16545" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm2_1">
+  <inertial>
+    <origin xyz="-0.040465526235857245 2.3147369022126496e-06 0.054831741127648825" rpy="0 0 0"/>
+    <mass value="0.1322297760351555"/>
+    <inertia ixx="0.000245" iyy="0.000352" izz="0.000134" ixy="-0.0" iyz="0.0" ixz="4.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.04 -0.00986 -0.27731" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.04 -0.00986 -0.27731" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm3_1">
+  <inertial>
+    <origin xyz="0.029317063154956954 -0.0002000289822079674 0.0403762810011275" rpy="0 0 0"/>
+    <mass value="0.10541571710492485"/>
+    <inertia ixx="0.000122" iyy="0.000209" izz="0.000118" ixy="0.0" iyz="1e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.029 -0.00986 -0.38917" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.029 -0.00986 -0.38917" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="base_top_1">
+  <inertial>
+    <origin xyz="-5.765094849732817e-06 -0.014245337073782687 0.018274986495708967" rpy="0 0 0"/>
+    <mass value="0.12088276685743926"/>
+    <inertia ixx="0.000184" iyy="7.3e-05" izz="0.000206" ixy="-0.0" iyz="-2.3e-05" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="shaft_1">
+  <inertial>
+    <origin xyz="-8.444107191252215e-11 5.1788072744753356e-05 -0.002549173912700417" rpy="0 0 0"/>
+    <mass value="0.024645990884455106"/>
+    <inertia ixx="1e-05" iyy="1e-05" izz="1.5e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="arm4_1">
+  <inertial>
+    <origin xyz="0.018539999999999394 -0.011778411270449584 0.5911609875985424" rpy="0 0 0"/>
+    <mass value="0.016955183931063943"/>
+    <inertia ixx="9e-06" iyy="7e-06" izz="4e-06" ixy="0.0" iyz="3e-06" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.01854 -0.00986 0.09" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.01854 -0.00986 0.09" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_urdf2_description/meshes/arm4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rigid 3" type="fixed">
+  <origin xyz="0.0 0.0 0.005" rpy="0 0 0"/>
+  <parent link="shaft_1"/>
+  <child link="axis1_1"/>
+</joint>
+
+<joint name="joint2" type="continuous">
+  <origin xyz="-0.029 0.00986 0.04025" rpy="0 0 0"/>
+  <parent link="axis1_1"/>
+  <child link="arm1_1"/>
+  <axis xyz="1.0 0.0 0.0"/>
+</joint>
+
+<joint name="joint3" type="continuous">
+  <origin xyz="0.069 0.0 0.11186" rpy="0 0 0"/>
+  <parent link="arm1_1"/>
+  <child link="arm2_1"/>
+  <axis xyz="-1.0 -0.0 -0.0"/>
+</joint>
+
+<joint name="joint4" type="continuous">
+  <origin xyz="-0.069 0.0 0.11186" rpy="0 0 0"/>
+  <parent link="arm2_1"/>
+  <child link="arm3_1"/>
+  <axis xyz="1.0 0.0 0.0"/>
+</joint>
+
+<joint name="Rigid 11" type="fixed">
+  <origin xyz="0.0 0.0 0.0742" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="base_top_1"/>
+</joint>
+
+<joint name="joint1" type="continuous">
+  <origin xyz="-0.0 0.0 0.046" rpy="0 0 0"/>
+  <parent link="base_top_1"/>
+  <child link="shaft_1"/>
+  <axis xyz="0.0 -0.0 1.0"/>
+</joint>
+
+<joint name="joint5" type="continuous">
+  <origin xyz="0.01046 0.0 -0.47917" rpy="0 0 0"/>
+  <parent link="arm3_1"/>
+  <child link="arm4_1"/>
+  <axis xyz="-0.0 -0.0 1.0"/>
+</joint>
+
+</robot>
