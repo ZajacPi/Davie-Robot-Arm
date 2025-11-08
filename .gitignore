@@ -1,0 +1,17 @@
+OldVersions/
+Prototypes/
+
+# ROS2 / Colcon / CMake build artifacts
+davie_ws/build/
+davie_ws/install/
+davie_ws/log/
+davie_ws/src/build/
+davie_ws/src/install/
+davie_ws/src/log/
+# IDE
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc

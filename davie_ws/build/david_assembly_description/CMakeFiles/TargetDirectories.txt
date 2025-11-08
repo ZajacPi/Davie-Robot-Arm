@@ -1,9 +1,0 @@
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/uninstall.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/david_assembly_description_uninstall.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/test.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/edit_cache.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/rebuild_cache.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/list_install_components.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/install.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/install/local.dir
-/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/david_assembly_description/CMakeFiles/install/strip.dir
