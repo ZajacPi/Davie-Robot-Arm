@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+<robot name="david_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find david_assembly_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find david_assembly_description)/urdf/david_assembly.trans" />
+<xacro:include filename="$(find david_assembly_description)/urdf/david_assembly.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.02496581862611542 1.258812630233752e-07 0.017611016251020108" rpy="0 0 0"/>
+    <mass value="0.1449164995716376"/>
+    <inertia ixx="8.7e-05" iyy="0.000234" izz="0.000279" ixy="0.0" iyz="0.0" ixz="2.3e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rotation_axis_1">
+  <inertial>
+    <origin xyz="-0.12950986140615908 -0.009609295122670877 0.030393974343594338" rpy="0 0 0"/>
+    <mass value="0.2604148105396399"/>
+    <inertia ixx="0.000151" iyy="0.000706" izz="0.000724" ixy="-1e-06" iyz="-2e-06" ixz="6.1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.107113 -0.009896 -0.03437" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.107113 -0.009896 -0.03437" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Rotation_axis_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Arm1_1">
+  <inertial>
+    <origin xyz="0.03819788773822738 -3.240711897102219e-05 0.052928548838493794" rpy="0 0 0"/>
+    <mass value="0.13709643304590788"/>
+    <inertia ixx="0.000259" iyy="0.000384" izz="0.000153" ixy="-0.0" iyz="-0.0" ixz="-6.4e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.029 -0.00986 -0.09145" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.029 -0.00986 -0.09145" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Arm2_1">
+  <inertial>
+    <origin xyz="-0.040465528765083705 2.3140027495278243e-06 0.054831743928819454" rpy="0 0 0"/>
+    <mass value="0.13222977603453326"/>
+    <inertia ixx="0.000245" iyy="0.000352" izz="0.000134" ixy="-0.0" iyz="0.0" ixz="4.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.041 -0.00986 -0.20331" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.041 -0.00986 -0.20331" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Arm3_1">
+  <inertial>
+    <origin xyz="0.029317067862226424 -0.0002001189949576692 0.04037554895601109" rpy="0 0 0"/>
+    <mass value="0.10541414634965401"/>
+    <inertia ixx="0.000122" iyy="0.000209" izz="0.000118" ixy="0.0" iyz="1e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.029 -0.00986 -0.31517" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.029 -0.00986 -0.31517" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://david_assembly_description/meshes/Arm3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Axis1_joint" type="continuous">
+  <origin xyz="0.107113 0.009896 0.03437" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Rotation_axis_1"/>
+  <axis xyz="0.0 0.0 1.0"/>
+</joint>
+
+<joint name="Arm1_joint" type="continuous">
+  <origin xyz="-0.136113 -3.6e-05 0.05708" rpy="0 0 0"/>
+  <parent link="Rotation_axis_1"/>
+  <child link="Arm1_1"/>
+  <axis xyz="1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="Arm2_joint" type="continuous">
+  <origin xyz="0.07 0.0 0.11186" rpy="0 0 0"/>
+  <parent link="Arm1_1"/>
+  <child link="Arm2_1"/>
+  <axis xyz="1.0 0.0 -0.0"/>
+</joint>
+
+<joint name="Arm3_joint" type="continuous">
+  <origin xyz="-0.07 0.0 0.11186" rpy="0 0 0"/>
+  <parent link="Arm2_1"/>
+  <child link="Arm3_1"/>
+  <axis xyz="-1.0 -0.0 0.0"/>
+</joint>
+
+</robot>
