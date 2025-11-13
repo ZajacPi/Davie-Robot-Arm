@@ -1,1 +1,0 @@
-Invoking command in '/home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/my_package': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/zajac/Documents/David/Davie-Robot-Arm/davie_ws/build/my_package -- -j12 -l12
