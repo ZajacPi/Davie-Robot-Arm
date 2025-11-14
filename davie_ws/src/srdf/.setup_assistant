@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: urdf4_description
+    relative_path: urdf/urdf4.xacro
+  srdf:
+    relative_path: config/urdf4.srdf
+  package_settings:
+    author_name: zajac
+    author_email: piotr8zajac8@gmail.com
+    generated_timestamp: 1763116159
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

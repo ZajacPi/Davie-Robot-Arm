@@ -46,6 +46,49 @@
   </collision>
 </link>
 
+<link name="base_top_1">
+  <inertial>
+    <origin xyz="-5.765094849732817e-06 -0.014245337073782687 0.018274986495708967" rpy="0 0 0"/>
+    <mass value="0.12088276685743926"/>
+    <inertia ixx="0.000184" iyy="7.3e-05" izz="0.000206" ixy="-0.0" iyz="-2.3e-05" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://urdf4_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://urdf4_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="shaft_1">
+  <inertial>
+    <origin xyz="-8.444107191252215e-11 5.1788072744753356e-05 -0.002549173912700417" rpy="0 0 0"/>
+    <mass value="0.024645990884455106"/>
+    <inertia ixx="1e-05" iyy="1e-05" izz="1.5e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://urdf4_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://urdf4_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+
 <link name="arm1_1">
   <inertial>
     <origin xyz="0.04046552623603066 -2.310683884223716e-06 0.05483174300548285" rpy="0 0 0"/>
@@ -88,47 +131,6 @@
   </collision>
 </link>
 
-<link name="base_top_1">
-  <inertial>
-    <origin xyz="-5.765094849732817e-06 -0.014245337073782687 0.018274986495708967" rpy="0 0 0"/>
-    <mass value="0.12088276685743926"/>
-    <inertia ixx="0.000184" iyy="7.3e-05" izz="0.000206" ixy="-0.0" iyz="-2.3e-05" ixz="-0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="package://urdf4_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.0 -0.0 -0.0742" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="package://urdf4_description/meshes/base_top_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="shaft_1">
-  <inertial>
-    <origin xyz="-8.444107191252215e-11 5.1788072744753356e-05 -0.002549173912700417" rpy="0 0 0"/>
-    <mass value="0.024645990884455106"/>
-    <inertia ixx="1e-05" iyy="1e-05" izz="1.5e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="package://urdf4_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.0 -0.0 -0.1202" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="package://urdf4_description/meshes/shaft_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
 
 <link name="arm3_1">
   <inertial>
