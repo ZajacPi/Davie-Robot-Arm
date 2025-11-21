@@ -1,0 +1,29 @@
+<!-- <launch>
+  <arg  name="model" 
+  	value="$(find urdf5_description)/urdf/urdf5.urdf.xacro"/>
+  
+  <arg name="rvizconfig" default="$(find urdf5_description)/launch/urdf.rviz"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+  <param name="use_gui" value="$(arg gui)"/>
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="rviz" pkg="rviz" args="-d $(arg rvizconfig)" type="rviz" required="true"/>
+</launch>
+ -->
+
+<launch>
+    <let name="urdf_path"
+         value="$(find-pkg-share urdf5_description)/urdf/david.urdf.xacro"/>
+    <let name="rviz_config_path"
+         value="$(find-pkg-share urdf5_description)/launch/urdf.rviz"/>
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description"
+               value="$(command 'xacro $(var urdf_path)')" />
+    </node>
+
+    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
+
+    <node pkg="rviz2" exec="rviz2" output="screen" 
+          args="-d $(var rviz_config_path)" />
+</launch>

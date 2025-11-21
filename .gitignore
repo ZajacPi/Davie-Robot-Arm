@@ -2,12 +2,12 @@ OldVersions/
 Prototypes/
 
 # ROS2 / Colcon / CMake build artifacts
-davie_ws/build/
-davie_ws/install/
-davie_ws/log/
-davie_ws/src/build/
-davie_ws/src/install/
-davie_ws/src/log/
+david_ws/build/
+david_ws/install/
+david_ws/log/
+
+3D_Models/OldVersions
+PCB/
 
 # IDE
 .vscode/
