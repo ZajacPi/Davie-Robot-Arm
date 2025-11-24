@@ -8,6 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 
 if(BUILD_TESTING)
@@ -23,13 +24,23 @@ if(BUILD_TESTING)
 endif()
 
 add_executable(simple_motion_node src/simple_motion_node.cpp)
+add_executable(command2motion_node src/command2motion_node.cpp)
 ament_target_dependencies(
     simple_motion_node
     rclcpp
     moveit_ros_planning_interface
+    geometry_msgs
+)
+ament_target_dependencies(
+    command2motion_node
+    rclcpp
+    moveit_ros_planning_interface
+    geometry_msgs
 )
 
-install(TARGETS simple_motion_node
+install(TARGETS 
+  command2motion_node
+  simple_motion_node 
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

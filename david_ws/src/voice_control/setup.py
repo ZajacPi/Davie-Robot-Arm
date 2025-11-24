@@ -1,14 +1,13 @@
 from setuptools import find_packages, setup
 
-package_name = 'voice_controll'
+package_name = 'voice_control'
 
 setup(
     name=package_name,
     version='0.0.0',
-packages=find_packages(include=['speech_recognition', 'speech_recognition.*']),
+packages=find_packages(include=['voice_control', 'voice_control.*']),
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
+        ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/msg', ['msg/MovementCommand.msg']),
     ],
@@ -25,7 +24,7 @@ packages=find_packages(include=['speech_recognition', 'speech_recognition.*']),
     },
     entry_points={
         'console_scripts': [
-            'voice_commands_node = speech_recognition.voice_commands_node:main'
+            'voice_commands_node = voice_control.voice_commands_node:main'
         ],
         
     },

@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
-from speech_recognition.msg import MovementCommand
+#twist is a standard message type, I use it instead of creating my own
+from geometry_msgs.msg import Twist
 
 import queue
 import sounddevice as sd
@@ -12,7 +13,6 @@ MODEL_PATH = "/home/zajac/Documents/David/vosk-model-small-en-us-0.15"
 q = queue.Queue()
 
 
-# Same text2int you already have  ---------------------------------------------
 def text2int(textnum, numwords={}):
     if not textnum:
         raise Exception("Empty number")
@@ -47,7 +47,6 @@ def text2int(textnum, numwords={}):
     return result + current
 
 
-# Command dictionary -----------------------------------------------------------
 commands = {
     "go up":        lambda n: {"z":  n},
     "go down":      lambda n: {"z": -n},
@@ -95,7 +94,7 @@ class VoiceNode(Node):
     def __init__(self):
         super().__init__("voice_commands_node")
 
-        self.publisher = self.create_publisher(MovementCommand, "movement_cmd", 10)
+        self.publisher = self.create_publisher(Twist, "movement_cmd", 10)
 
         self.get_logger().info("Loading Vosk model...")
         self.model = Model(MODEL_PATH)
@@ -135,11 +134,25 @@ class VoiceNode(Node):
             self.get_logger().info(f"Recognized: {text}")
 
             cmd = parse_command(text)
+            
+            twist = Twist()
             if cmd:
-                axis, value = cmd
-                msg = MovementCommand(axis=axis, value=float(value))
-                self.publisher.publish(msg)
-                self.get_logger().info(f"Published command: axis={axis}, value={value}")
+                if "x" in cmd:
+                    twist.linear.x = float(cmd["x"])
+                if "y" in cmd:
+                    twist.linear.y = float(cmd["y"])
+                if "z" in cmd:
+                    twist.linear.z = float(cmd["z"])
+
+                if "roll" in cmd:
+                    twist.angular.x = float(cmd["roll"])
+                if "pitch" in cmd:
+                    twist.angular.y = float(cmd["pitch"])
+                if "yaw" in cmd:
+                    twist.angular.z = float(cmd["yaw"])
+
+                self.publisher.publish(twist)
+                self.get_logger().info(f"Published command: {twist}")
 
 
 def main(args=None):
