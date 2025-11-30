@@ -1,3 +1,6 @@
+//RUN MICROROS
+// ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0 -b 115200
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <AccelStepper.h>
@@ -86,9 +89,9 @@ static double position_data[6];
 rcl_subscription_t sub_jointstate;
 sensor_msgs__msg__JointState jointstate_msg;
 
-// rcl_service_t home_srv;
-// std_srvs__srv__Trigger_Request  home_request;
-// std_srvs__srv__Trigger_Response home_response;
+rcl_service_t home_srv;
+std_srvs__srv__Trigger_Request  home_request;
+std_srvs__srv__Trigger_Response home_response;
 
 
 rcl_allocator_t allocator;
@@ -99,9 +102,10 @@ rclc_executor_t executor;
 // =============================
 // STEPPER SETUP
 // =============================
-// const float stepsPerRevolution = 200;
-// int microstepSetting = 1;
-// AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
+const float stepsPerRevolution = 200;
+int microstepSetting = 1;
+AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
+volatile long target_stepper_position = 0;
 
 // =============================
 // LOW LEVEL PCA9685 FUNCTIONS
@@ -167,45 +171,50 @@ void jointstate_callback(const void * msgin)
         uint16_t ticks = angle_to_pwm(angle_deg, servo_min_us[i], servo_max_us[i]);
         pca_set_pwm(i, 0, ticks);
     }
+
+    //update stepper position
+    float pos_rad = msg->position.data[0];
+
+    // Convert radians to steps:
+    // adjust gear ratio, microstepping, etc.
+    float steps_per_rev = stepsPerRevolution * microstepSetting;
+    long new_target = (long)(pos_rad * (steps_per_rev / (2.0f * M_PI)));
+
+    target_stepper_position = new_target;
+
 }
 
 
 // =============================
 // STEPPER CALLBACK (fixed to set response)
 // =============================
-// void home_callback(const void* req, void* res) {
-//   // make writable reference
-//   std_srvs__srv__Trigger_Response * response = (std_srvs__srv__Trigger_Response *)res;
+void home_callback(const void* req, void* res) {
+  std_srvs__srv__Trigger_Response * response = (std_srvs__srv__Trigger_Response *)res;
+  home_stepper();
+}
 
-//   Serial.println("Home service requested");
+void home_stepper(){
+  stepper.setMaxSpeed(50);
+  stepper.setAcceleration(50);
+  // stepper.enableOutputs();
 
-//   // Rotate slowly until hall sensor triggers
-//   stepper.setMaxSpeed(50);      // low speed for homing
-//   stepper.setAcceleration(100);
-//   stepper.enableOutputs();
-//   stepper.setCurrentPosition(0);
+  // unsigned long start = millis();
+  while (digitalRead(HALL_PIN) == HIGH) { // assuming HIGH = not triggered
+    stepper.move(5);      // move one step at a time
+    stepper.run();
 
-//   unsigned long start = millis();
-//   while (digitalRead(HALL_PIN) == HIGH) { // assuming HIGH = not triggered
-//     stepper.move(1);      // move one step at a time
-//     stepper.run();
+    // safety timeout in case sensor fails
+    // if (millis() - start > 30000) {
+    //   Serial.println("Homing timeout!");
+    //   response->success = false;
+    //   // rosidl_runtime_c__String__assign(&response->message, "Homing timeout");
+    //   return;
+    // }
+  }
+  stepper.setCurrentPosition(0);
+  // stepper.disableOutputs();
 
-//     // safety timeout in case sensor fails
-//     if (millis() - start > 30000) {
-//       Serial.println("Homing timeout!");
-//       response->success = false;
-//       rosidl_runtime_c__String__assign(&response->message, "Homing timeout");
-//       return;
-//     }
-//   }
-
-//   stepper.setCurrentPosition(0); // set zero position
-//   response->success = true;
-//   rosidl_runtime_c__String__assign(&response->message, "Homing done");
-//   Serial.println("Homing done");
-// }
-
-
+}
 
 // ==========================================================================================
 // SETUP
@@ -215,7 +224,7 @@ void setup() {
   delay(200);
 
   // --- Hall sensor ---
-  // pinMode(HALL_PIN, INPUT_PULLUP);
+  pinMode(HALL_PIN, INPUT_PULLUP);
 
   // ---- I2C ----
   Wire.begin(SDA_PIN, SCL_PIN); // 400 kHz
@@ -232,16 +241,18 @@ void setup() {
   delay(500);
 
   // --- Stepper setup ---
-  // pinMode(M0_PIN, OUTPUT);
-  // pinMode(M1_PIN, OUTPUT);
-  // pinMode(M2_PIN, OUTPUT);
-  // digitalWrite(M0_PIN, LOW);
-  // digitalWrite(M1_PIN, LOW);
-  // digitalWrite(M2_PIN, LOW);
+  pinMode(M0_PIN, OUTPUT);
+  pinMode(M1_PIN, OUTPUT);
+  pinMode(M2_PIN, OUTPUT);
+  digitalWrite(M0_PIN, LOW);
+  digitalWrite(M1_PIN, LOW);
+  digitalWrite(M2_PIN, LOW);
 
-  // stepper.setEnablePin(EN_PIN);
-  // stepper.setPinsInverted(false, false, true);
-  // stepper.enableOutputs();
+  stepper.setEnablePin(EN_PIN);
+  stepper.setPinsInverted(false, false, true);
+  stepper.enableOutputs();
+  // stepper.disableOutputs();  // quiet when idle
+
 
   // float MaxRPM = 300;
   // float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
@@ -251,7 +262,7 @@ void setup() {
   // stepper.setAcceleration(Accel_StepsPerSec2);
 
   // stepper.setCurrentPosition(0);
-
+  home_stepper();
   ///////////////////////////////////////////// Mabye home on setup???
 
   // ---- micro-ROS Transport ----
@@ -272,12 +283,12 @@ void setup() {
   );
   
   // ---- Service ----
-  //  rclc_service_init_default(
-  //     &home_srv,
-  //     &node,
-  //     ROSIDL_GET_SRV_TYPE_SUPPORT(std_srvs, srv, Trigger),
-  //     "/esp_home_stepper"
-  // );
+   rclc_service_init_default(
+      &home_srv,
+      &node,
+      ROSIDL_GET_SRV_TYPE_SUPPORT(std_srvs, srv, Trigger),
+      "/esp_home_stepper"
+  );
 
   // Allocate memory for JointState arrays (VERY IMPORTANT)
   jointstate_msg.name.data = name_seq;     // rosidl_runtime_c__String*
@@ -306,17 +317,17 @@ void setup() {
   jointstate_msg.effort.data = NULL;
   jointstate_msg.effort.size = 0;
   jointstate_msg.effort.capacity = 0;
-  
-  // ---- Executor ----
-  rclc_executor_init(&executor, &support.context, 1, &allocator);
+
+  // ---- Executor ---- has 2 because topic and service
+  rclc_executor_init(&executor, &support.context, 2, &allocator);
   rclc_executor_add_subscription(&executor, &sub_jointstate, &jointstate_msg, &jointstate_callback, ON_NEW_DATA);
-  // rclc_executor_add_service(&executor, &home_srv, &home_request, &home_response, &home_callback);
+  rclc_executor_add_service(&executor, &home_srv, &home_request, &home_response, &home_callback);
   }
 
-// =============================
-// LOOP
-// =============================
+
 void loop() {
-  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10));
-  delay(10);
+  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(5));
+  stepper.moveTo(target_stepper_position);  
+  stepper.run();
+  delay(1);
 }
