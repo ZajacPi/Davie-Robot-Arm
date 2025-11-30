@@ -9,19 +9,9 @@
 #include <sensor_msgs/msg/joint_state.h>
 #include <std_srvs/srv/trigger.h>
 
-
-// === Hall sensor ===
-#define HALL_PIN 32 
-
-// =============================
-// STEPPER DRIVER PINS
-// =============================
-#define STEP_PIN 18
-#define DIR_PIN 4
-#define EN_PIN 23
-#define M0_PIN 19
-#define M1_PIN 21
-#define M2_PIN 22
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // =============================
 // I2C PINS (ESP32)
@@ -77,22 +67,13 @@ int servo_max_us[5] = {
 // =============================
 rcl_subscription_t sub_jointstate;
 sensor_msgs__msg__JointState jointstate_msg;
-
-// rcl_service_t home_srv;
-// std_srvs__srv__Trigger_Request  home_request;
-// std_srvs__srv__Trigger_Response home_response;
+sensor_msgs__msg__JointState__init(&jointstate_msg);
 
 rcl_allocator_t allocator;
 rclc_support_t support;
 rcl_node_t node;
 rclc_executor_t executor;
 
-// =============================
-// STEPPER SETUP
-// =============================
-const float stepsPerRevolution = 200;
-int microstepSetting = 1;
-AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
 
 // =============================
 // LOW LEVEL PCA9685 FUNCTIONS
@@ -161,42 +142,6 @@ void jointstate_callback(const void * msgin)
 }
 
 
-// =============================
-// STEPPER CALLBACK (fixed to set response)
-// =============================
-// void home_callback(const void* req, void* res) {
-//   // make writable reference
-//   std_srvs__srv__Trigger_Response * response = (std_srvs__srv__Trigger_Response *)res;
-
-//   Serial.println("Home service requested");
-
-//   // Rotate slowly until hall sensor triggers
-//   stepper.setMaxSpeed(50);      // low speed for homing
-//   stepper.setAcceleration(100);
-//   stepper.enableOutputs();
-//   stepper.setCurrentPosition(0);
-
-//   unsigned long start = millis();
-//   while (digitalRead(HALL_PIN) == HIGH) { // assuming HIGH = not triggered
-//     stepper.move(1);      // move one step at a time
-//     stepper.run();
-
-//     // safety timeout in case sensor fails
-//     if (millis() - start > 30000) {
-//       Serial.println("Homing timeout!");
-//       response->success = false;
-//       rosidl_runtime_c__String__assign(&response->message, "Homing timeout");
-//       return;
-//     }
-//   }
-
-//   stepper.setCurrentPosition(0); // set zero position
-//   response->success = true;
-//   rosidl_runtime_c__String__assign(&response->message, "Homing done");
-//   Serial.println("Homing done");
-// }
-
-
 
 // ==========================================================================================
 // SETUP
@@ -204,9 +149,6 @@ void jointstate_callback(const void * msgin)
 void setup() {
   Serial.begin(115200);
   delay(200);
-
-  // --- Hall sensor ---
-  pinMode(HALL_PIN, INPUT_PULLUP);
 
   // ---- I2C ----
   Wire.begin(SDA_PIN, SCL_PIN); // 400 kHz
@@ -221,29 +163,6 @@ void setup() {
   delay(500);
   pca_set_pwm(0, 0, angle_to_pwm(180, FEETECH_MIN_US, FEETECH_MAX_US));
   delay(500);
-
-  // --- Stepper setup ---
-  pinMode(M0_PIN, OUTPUT);
-  pinMode(M1_PIN, OUTPUT);
-  pinMode(M2_PIN, OUTPUT);
-  digitalWrite(M0_PIN, LOW);
-  digitalWrite(M1_PIN, LOW);
-  digitalWrite(M2_PIN, LOW);
-
-  stepper.setEnablePin(EN_PIN);
-  stepper.setPinsInverted(false, false, true);
-  stepper.enableOutputs();
-
-  float MaxRPM = 300;
-  float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
-  stepper.setMaxSpeed(Max_Speed_StepsPerSec);
-  float AccelRPMperSec = 3000;
-  float Accel_StepsPerSec2 = microstepSetting * stepsPerRevolution * AccelRPMperSec / 60;
-  stepper.setAcceleration(Accel_StepsPerSec2);
-
-  stepper.setCurrentPosition(0);
-
-  ///////////////////////////////////////////// Mabye home on setup???
 
   // ---- micro-ROS Transport ----
   set_microros_transports();
@@ -260,35 +179,37 @@ void setup() {
       "/esp_joint_states"
   );
   
-  // ---- Service ----
-  //  rclc_service_init_default(
-  //     &home_srv,
-  //     &node,
-  //     ROSIDL_GET_SRV_TYPE_SUPPORT(std_srvs, srv, Trigger),
-  //     "/esp_home_stepper"
-  // );
 
   // Allocate memory for JointState arrays (VERY IMPORTANT)
-  jointstate_msg.position.capacity = 6;
-  jointstate_msg.position.size = 6;
-  jointstate_msg.position.data = (double*) malloc(6 * sizeof(double));
+// Allocate name[]
+jointstate_msg.name.capacity = 6;
+jointstate_msg.name.size = 6;
+jointstate_msg.name.data = malloc(6 * sizeof(rosidl_runtime_c__String));
 
-  jointstate_msg.name.capacity = 6;
-  jointstate_msg.name.size = 6;
-  jointstate_msg.name.data = (rosidl_runtime_c__String*) malloc(6 * sizeof(rosidl_runtime_c__String));
+for(int i = 0; i < 6; i++) {
+    jointstate_msg.name.data[i].capacity = 20;
+    jointstate_msg.name.data[i].size = 0;
+    jointstate_msg.name.data[i].data = malloc(20);
+}
 
-  for (int i = 0; i < 6; i++) {
-      jointstate_msg.name.data[i].capacity = 20;
-      jointstate_msg.name.data[i].size = 0;
-      jointstate_msg.name.data[i].data = (char*) malloc(20);
-  }
+// Allocate position[]
+jointstate_msg.position.capacity = 6;
+jointstate_msg.position.size = 6;
+jointstate_msg.position.data = malloc(6 * sizeof(double));
 
-  // don't do it manually
-  // sensor_msgs__msg__JointState__init(&jointstate_msg);
+// velocity[] and effort[] are EMPTY ARRAYS (size=0), so sub should accept them.
+jointstate_msg.velocity.capacity = 0;
+jointstate_msg.velocity.size = 0;
+jointstate_msg.velocity.data = NULL;
+
+jointstate_msg.effort.capacity = 0;
+jointstate_msg.effort.size = 0;
+jointstate_msg.effort.data = NULL;
+
+
   // ---- Executor ----
   rclc_executor_init(&executor, &support.context, 1, &allocator);
   rclc_executor_add_subscription(&executor, &sub_jointstate, &jointstate_msg, &jointstate_callback, ON_NEW_DATA);
-  // rclc_executor_add_service(&executor, &home_srv, &home_request, &home_response, &home_callback);
   }
 
 // =============================

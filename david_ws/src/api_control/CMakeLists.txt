@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(controll_with_api)
+project(api_control)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -25,6 +25,12 @@ endif()
 
 add_executable(simple_motion_node src/simple_motion_node.cpp)
 add_executable(command2motion_node src/command2motion_node.cpp)
+
+add_executable(moveit2microros src/moveit2microros.cpp)
+add_executable(moveit2microros2 src/moveit2microros2.cpp)
+
+add_executable(test_publisher_node src/test_publisher_node.cpp)
+
 ament_target_dependencies(
     simple_motion_node
     rclcpp
@@ -38,9 +44,33 @@ ament_target_dependencies(
     geometry_msgs
 )
 
+ament_target_dependencies(
+    moveit2microros
+    rclcpp
+    geometry_msgs
+    moveit_ros_planning_interface
+)
+
+ament_target_dependencies(
+    moveit2microros2
+    rclcpp
+    geometry_msgs
+    moveit_ros_planning_interface
+)
+
+ament_target_dependencies(
+    test_publisher_node
+    rclcpp
+    geometry_msgs
+    moveit_ros_planning_interface
+)
+
 install(TARGETS 
   command2motion_node
   simple_motion_node 
+  moveit2microros
+  moveit2microros2
+  test_publisher_node
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

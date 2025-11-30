@@ -23,3 +23,29 @@ david_arm_controller:
       - position
     state_interfaces:
       - position
+    publish_joint_trajectory: true
+
+# # Constraints for safe motion execution
+# constraints:
+#   goal_time: 0.6                 # allowed time to reach the goal
+#   stopped_velocity_tolerance: 0.01
+#   # Optional per-joint tolerances
+#   joint1: {trajectory: 1.0, goal: 0.05}
+#   joint2: {trajectory: 1.0, goal: 0.05}
+#   joint3: {trajectory: 1.0, goal: 0.05}
+#   joint4: {trajectory: 1.0, goal: 0.05}
+#   joint5: {trajectory: 1.0, goal: 0.05}
+#   joint6: {trajectory: 1.0, goal: 0.05}
+
+# # Gains for internal position PID control (tune for your hardware)
+# gains:
+#   joint1: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+#   joint2: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+#   joint3: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+#   joint4: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+#   joint5: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+#   joint6: {p: 100.0, d: 0.0, i: 0.0, i_clamp: 0.0}
+
+# # Optional: interpolate in joint space
+# interpolation_method: linear
+# allow_partial_joints_goal: false
