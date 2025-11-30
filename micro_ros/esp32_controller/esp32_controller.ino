@@ -9,6 +9,9 @@
 #include <sensor_msgs/msg/joint_state.h>
 #include <std_srvs/srv/trigger.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // === Hall sensor ===
 #define HALL_PIN 32 
@@ -75,12 +78,18 @@ int servo_max_us[5] = {
 // =============================
 // micro-ROS VARIABLES
 // =============================
+// STATIC BUFFERS FOR JOINT MESSAGES 
+static char name_data[6][20]; // 6 names, up to 19 chars + null
+static rosidl_runtime_c__String name_seq[6]; // sequence elements
+static double position_data[6];   
+
 rcl_subscription_t sub_jointstate;
 sensor_msgs__msg__JointState jointstate_msg;
 
 // rcl_service_t home_srv;
 // std_srvs__srv__Trigger_Request  home_request;
 // std_srvs__srv__Trigger_Response home_response;
+
 
 rcl_allocator_t allocator;
 rclc_support_t support;
@@ -90,9 +99,9 @@ rclc_executor_t executor;
 // =============================
 // STEPPER SETUP
 // =============================
-const float stepsPerRevolution = 200;
-int microstepSetting = 1;
-AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
+// const float stepsPerRevolution = 200;
+// int microstepSetting = 1;
+// AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
 
 // =============================
 // LOW LEVEL PCA9685 FUNCTIONS
@@ -206,7 +215,7 @@ void setup() {
   delay(200);
 
   // --- Hall sensor ---
-  pinMode(HALL_PIN, INPUT_PULLUP);
+  // pinMode(HALL_PIN, INPUT_PULLUP);
 
   // ---- I2C ----
   Wire.begin(SDA_PIN, SCL_PIN); // 400 kHz
@@ -223,25 +232,25 @@ void setup() {
   delay(500);
 
   // --- Stepper setup ---
-  pinMode(M0_PIN, OUTPUT);
-  pinMode(M1_PIN, OUTPUT);
-  pinMode(M2_PIN, OUTPUT);
-  digitalWrite(M0_PIN, LOW);
-  digitalWrite(M1_PIN, LOW);
-  digitalWrite(M2_PIN, LOW);
+  // pinMode(M0_PIN, OUTPUT);
+  // pinMode(M1_PIN, OUTPUT);
+  // pinMode(M2_PIN, OUTPUT);
+  // digitalWrite(M0_PIN, LOW);
+  // digitalWrite(M1_PIN, LOW);
+  // digitalWrite(M2_PIN, LOW);
 
-  stepper.setEnablePin(EN_PIN);
-  stepper.setPinsInverted(false, false, true);
-  stepper.enableOutputs();
+  // stepper.setEnablePin(EN_PIN);
+  // stepper.setPinsInverted(false, false, true);
+  // stepper.enableOutputs();
 
-  float MaxRPM = 300;
-  float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
-  stepper.setMaxSpeed(Max_Speed_StepsPerSec);
-  float AccelRPMperSec = 3000;
-  float Accel_StepsPerSec2 = microstepSetting * stepsPerRevolution * AccelRPMperSec / 60;
-  stepper.setAcceleration(Accel_StepsPerSec2);
+  // float MaxRPM = 300;
+  // float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
+  // stepper.setMaxSpeed(Max_Speed_StepsPerSec);
+  // float AccelRPMperSec = 3000;
+  // float Accel_StepsPerSec2 = microstepSetting * stepsPerRevolution * AccelRPMperSec / 60;
+  // stepper.setAcceleration(Accel_StepsPerSec2);
 
-  stepper.setCurrentPosition(0);
+  // stepper.setCurrentPosition(0);
 
   ///////////////////////////////////////////// Mabye home on setup???
 
@@ -251,6 +260,8 @@ void setup() {
   allocator = rcl_get_default_allocator();
   rclc_support_init(&support, 0, NULL, &allocator);
   rclc_node_init_default(&node, "esp_controll_node", "", &support);
+
+  sensor_msgs__msg__JointState__init(&jointstate_msg);
 
   // ---- Subscriber ----
   rclc_subscription_init_default(
@@ -269,22 +280,33 @@ void setup() {
   // );
 
   // Allocate memory for JointState arrays (VERY IMPORTANT)
-  jointstate_msg.position.capacity = 6;
-  jointstate_msg.position.size = 6;
-  jointstate_msg.position.data = (double*) malloc(6 * sizeof(double));
-
-  jointstate_msg.name.capacity = 6;
+  jointstate_msg.name.data = name_seq;     // rosidl_runtime_c__String*
   jointstate_msg.name.size = 6;
-  jointstate_msg.name.data = (rosidl_runtime_c__String*) malloc(6 * sizeof(rosidl_runtime_c__String));
-
+  jointstate_msg.name.capacity = 6;
+  // link each rosidl_runtime_c__String to a char buffer
   for (int i = 0; i < 6; i++) {
-      jointstate_msg.name.data[i].capacity = 20;
-      jointstate_msg.name.data[i].size = 0;
-      jointstate_msg.name.data[i].data = (char*) malloc(20);
+    name_seq[i].data = name_data[i];
+    name_seq[i].size = 0;       // initially empty string
+    name_seq[i].capacity = 20;  // room for 19 chars + '\0'
+    name_data[i][0] = '\0';
   }
 
-  // don't do it manually
-  // sensor_msgs__msg__JointState__init(&jointstate_msg);
+  // position sequence -> point to position_data
+  jointstate_msg.position.data = position_data;
+  jointstate_msg.position.size = 6;
+  jointstate_msg.position.capacity = 6;
+  // zero them initially
+  for (int i = 0; i < 6; i++) position_data[i] = 0.0;
+
+  // velocity and effort left empty
+  jointstate_msg.velocity.data = NULL;
+  jointstate_msg.velocity.size = 0;
+  jointstate_msg.velocity.capacity = 0;
+
+  jointstate_msg.effort.data = NULL;
+  jointstate_msg.effort.size = 0;
+  jointstate_msg.effort.capacity = 0;
+  
   // ---- Executor ----
   rclc_executor_init(&executor, &support.context, 1, &allocator);
   rclc_executor_add_subscription(&executor, &sub_jointstate, &jointstate_msg, &jointstate_callback, ON_NEW_DATA);

@@ -67,7 +67,12 @@ int servo_max_us[5] = {
 // =============================
 rcl_subscription_t sub_jointstate;
 sensor_msgs__msg__JointState jointstate_msg;
-sensor_msgs__msg__JointState__init(&jointstate_msg);
+// STATIC BUFFERS (no dynamic allocations)
+static char name_data[6][20]; // 6 names, up to 19 chars + null
+static rosidl_runtime_c__String name_seq[6]; // sequence elements
+static double position_data[6];               // positions buffer
+
+
 
 rcl_allocator_t allocator;
 rclc_support_t support;
@@ -151,12 +156,12 @@ void setup() {
   delay(200);
 
   // ---- I2C ----
-  Wire.begin(SDA_PIN, SCL_PIN); // 400 kHz
+  Wire.begin(SDA_PIN, SCL_PIN);
   pca_write(MODE1, 0x00);
-  pca_write(MODE2, 0x04); 
-  pca_set_pwm_freq(50); // for all of the servos it is 50Hz
-  
-  // direct sweep test on channel 0
+  pca_write(MODE2, 0x04);
+  pca_set_pwm_freq(50);
+
+  // direct sweep test
   pca_set_pwm(0, 0, angle_to_pwm(-90, FEETECH_MIN_US, FEETECH_MAX_US));
   delay(500);
   pca_set_pwm(0, 0, angle_to_pwm(0, FEETECH_MIN_US, FEETECH_MAX_US));
@@ -166,10 +171,13 @@ void setup() {
 
   // ---- micro-ROS Transport ----
   set_microros_transports();
-  
+
   allocator = rcl_get_default_allocator();
   rclc_support_init(&support, 0, NULL, &allocator);
   rclc_node_init_default(&node, "esp_controll_node", "", &support);
+
+  // --- !!! POPRAWKA !!! ---
+  sensor_msgs__msg__JointState__init(&jointstate_msg);
 
   // ---- Subscriber ----
   rclc_subscription_init_default(
@@ -178,39 +186,71 @@ void setup() {
       ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, JointState),
       "/esp_joint_states"
   );
-  
 
-  // Allocate memory for JointState arrays (VERY IMPORTANT)
-// Allocate name[]
-jointstate_msg.name.capacity = 6;
-jointstate_msg.name.size = 6;
-jointstate_msg.name.data = malloc(6 * sizeof(rosidl_runtime_c__String));
+  // ---- Allocate dynamically JointState ----
+  // jointstate_msg.name.capacity = 6;
+  // jointstate_msg.name.size = 6;
+  // jointstate_msg.name.data =
+  //     (rosidl_runtime_c__String*) malloc(6 * sizeof(rosidl_runtime_c__String));
 
-for(int i = 0; i < 6; i++) {
-    jointstate_msg.name.data[i].capacity = 20;
-    jointstate_msg.name.data[i].size = 0;
-    jointstate_msg.name.data[i].data = malloc(20);
-}
+  // for(int i = 0; i < 6; i++) {
+  //     jointstate_msg.name.data[i].capacity = 20;
+  //     jointstate_msg.name.data[i].size = 0;
+  //     jointstate_msg.name.data[i].data =
+  //         (char*) malloc(20);
+  // }
 
-// Allocate position[]
-jointstate_msg.position.capacity = 6;
-jointstate_msg.position.size = 6;
-jointstate_msg.position.data = malloc(6 * sizeof(double));
+  // jointstate_msg.position.capacity = 6;
+  // jointstate_msg.position.size = 6;
+  // jointstate_msg.position.data =
+  //     (double*) malloc(6 * sizeof(double));
 
-// velocity[] and effort[] are EMPTY ARRAYS (size=0), so sub should accept them.
-jointstate_msg.velocity.capacity = 0;
-jointstate_msg.velocity.size = 0;
-jointstate_msg.velocity.data = NULL;
+  // // velocity and effort are empty
+  // jointstate_msg.velocity.capacity = 0;
+  // jointstate_msg.velocity.size = 0;
+  // jointstate_msg.velocity.data = NULL;
 
-jointstate_msg.effort.capacity = 0;
-jointstate_msg.effort.size = 0;
-jointstate_msg.effort.data = NULL;
+  // jointstate_msg.effort.capacity = 0;
+  // jointstate_msg.effort.size = 0;
+  // jointstate_msg.effort.data = NULL;
+  // =========================
+  // STATIC ALLOCATION for jointstate_msg (subscriber buffer)
+  // =========================
+  // initialize the ROS message struct fields to point to our static buffers
 
+  // name sequence -> point to name_seq array
+  jointstate_msg.name.data = name_seq;     // rosidl_runtime_c__String*
+  jointstate_msg.name.size = 6;
+  jointstate_msg.name.capacity = 6;
+  // link each rosidl_runtime_c__String to a char buffer
+  for (int i = 0; i < 6; i++) {
+    name_seq[i].data = name_data[i];
+    name_seq[i].size = 0;       // initially empty string
+    name_seq[i].capacity = 20;  // room for 19 chars + '\0'
+    name_data[i][0] = '\0';
+  }
+
+  // position sequence -> point to position_data
+  jointstate_msg.position.data = position_data;
+  jointstate_msg.position.size = 6;
+  jointstate_msg.position.capacity = 6;
+  // zero them initially
+  for (int i = 0; i < 6; i++) position_data[i] = 0.0;
+
+  // velocity and effort left empty
+  jointstate_msg.velocity.data = NULL;
+  jointstate_msg.velocity.size = 0;
+  jointstate_msg.velocity.capacity = 0;
+
+  jointstate_msg.effort.data = NULL;
+  jointstate_msg.effort.size = 0;
+  jointstate_msg.effort.capacity = 0;
 
   // ---- Executor ----
   rclc_executor_init(&executor, &support.context, 1, &allocator);
-  rclc_executor_add_subscription(&executor, &sub_jointstate, &jointstate_msg, &jointstate_callback, ON_NEW_DATA);
-  }
+  rclc_executor_add_subscription(&executor, &sub_jointstate, &jointstate_msg,
+                                 &jointstate_callback, ON_NEW_DATA);
+}
 
 // =============================
 // LOOP
