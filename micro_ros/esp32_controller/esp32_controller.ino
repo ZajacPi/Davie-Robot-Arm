@@ -165,12 +165,22 @@ void jointstate_callback(const void * msgin)
     if (millis() - last_update < 20) return; // ~50 Hz update rate
     last_update = millis();
 
-    //update servo joints
-    for (int i = 0; i < 5; i++) {
-        float angle_deg = msg->position.data[i+1] * 180.0 / M_PI;
-        uint16_t ticks = angle_to_pwm(angle_deg, servo_min_us[i], servo_max_us[i]);
-        pca_set_pwm(i, 0, ticks);
-    }
+   // update servo joints
+  for (int j = 1; j <= 5; j++) {
+      float angle_deg = msg->position.data[j] * 180.0f / M_PI;
+      if(j == 2 || j == 3){
+        angle_deg = -angle_deg;
+      }
+    
+      int channel = 6 + j;  // j=1→7, j=5→11
+      int idx = j - 1;      // servo_min/max indexed 0..4
+
+      uint16_t ticks = angle_to_pwm(angle_deg,
+                                    servo_min_us[idx],
+                                    servo_max_us[idx]);
+      pca_set_pwm(channel, 0, ticks);
+  }
+
 
     //update stepper position
     float pos_rad = msg->position.data[0];
@@ -231,14 +241,22 @@ void setup() {
   pca_write(MODE1, 0x00);
   pca_write(MODE2, 0x04); 
   pca_set_pwm_freq(50); // for all of the servos it is 50Hz
-  
-  // direct sweep test on channel 0
-  pca_set_pwm(0, 0, angle_to_pwm(-90, FEETECH_MIN_US, FEETECH_MAX_US));
-  delay(500);
-  pca_set_pwm(0, 0, angle_to_pwm(0, FEETECH_MIN_US, FEETECH_MAX_US));
-  delay(500);
-  pca_set_pwm(0, 0, angle_to_pwm(180, FEETECH_MIN_US, FEETECH_MAX_US));
-  delay(500);
+
+  pca_set_pwm(11, 0, angle_to_pwm(0, FEETECH_MIN_US, FEETECH_MAX_US));
+  delay(1000);
+
+  pca_set_pwm(10, 0, angle_to_pwm(0, FEETECH_MIN_US, FEETECH_MAX_US));
+  delay(1000);
+
+  pca_set_pwm(9, 0, angle_to_pwm(0, FEETECH_MIN_US, FEETECH_MAX_US));
+  delay(1000);
+
+  pca_set_pwm(8, 0, angle_to_pwm(0, TOWERPRO_MIN_US, TOWERPRO_MAX_US));
+  delay(1000);
+
+  pca_set_pwm(7, 0, angle_to_pwm(0, TOWERPRO_MIN_US, TOWERPRO_MAX_US));
+  delay(1000);
+
 
   // --- Stepper setup ---
   pinMode(M0_PIN, OUTPUT);
@@ -254,14 +272,14 @@ void setup() {
   // stepper.disableOutputs();  // quiet when idle
 
 
-  // float MaxRPM = 300;
-  // float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
-  // stepper.setMaxSpeed(Max_Speed_StepsPerSec);
-  // float AccelRPMperSec = 3000;
-  // float Accel_StepsPerSec2 = microstepSetting * stepsPerRevolution * AccelRPMperSec / 60;
-  // stepper.setAcceleration(Accel_StepsPerSec2);
+  float MaxRPM = 300;
+  float Max_Speed_StepsPerSec = microstepSetting * stepsPerRevolution * MaxRPM / 60;
+  stepper.setMaxSpeed(Max_Speed_StepsPerSec);
+  float AccelRPMperSec = 3000;
+  float Accel_StepsPerSec2 = microstepSetting * stepsPerRevolution * AccelRPMperSec / 60;
+  stepper.setAcceleration(Accel_StepsPerSec2);
 
-  // stepper.setCurrentPosition(0);
+  stepper.setCurrentPosition(0);
   home_stepper();
   ///////////////////////////////////////////// Mabye home on setup???
 

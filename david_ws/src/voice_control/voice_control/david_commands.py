@@ -8,7 +8,7 @@ MODEL_PATH = "/home/zajac/Documents/David/vosk-model-small-en-us-0.15"
 
 q = queue.Queue()
 
-def text2int(textnum, numwords={}):
+def text2int(textnum, numwords={}):     
     # Source - https://stackoverflow.com/a
     # Posted by recursive, modified by community. See post 'Timeline' for change history
     # Retrieved 2025-11-23, License - CC BY-SA 3.0

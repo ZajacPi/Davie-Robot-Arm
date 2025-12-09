@@ -21,7 +21,7 @@ public:
 
         // --- 50 Hz timer ---
         timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(40),       //////////////////////////////////////////
+            std::chrono::milliseconds(50),       //////////////////////////////////////////
             std::bind(&MoveitMirrorBridge::publish_filtered, this));
 
         RCLCPP_INFO(this->get_logger(), "MoveIt Mirror Bridge initialized.");
