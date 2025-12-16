@@ -1,0 +1,18 @@
+OldVersions/
+Prototypes/
+
+# ROS2 / Colcon / CMake build artifacts
+david_ws/build/
+david_ws/install/
+david_ws/log/
+
+3D_Models/OldVersions
+PCB/
+
+# IDE
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc

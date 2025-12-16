@@ -1,9 +1,0 @@
-<launch>
-
-<rosparam file="$(find David_assembly_description)/launch/controller.yaml" command="load"/>
-<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="David_assembly" args="Axis1_joint_position_controller Arm1_joint_position_controller Arm2_joint_position_controller Arm3_joint_position_controller joint_state_controller "/>
-<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-  <remap from="/joint_states" to="/David_assembly/joint_states"/>
-</node>
-
-</launch>
