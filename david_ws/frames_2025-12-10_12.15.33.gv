@@ -1,0 +1,15 @@
+digraph G {
+"base_link" -> "base_top_1"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"world" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"shaft_1" -> "rotation_base_1"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"base_top_1" -> "shaft_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+"rotation_base_1" -> "arm1_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+"arm1_1" -> "arm2_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+"arm2_1" -> "arm3_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+"arm3_1" -> "arm4_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+"arm4_1" -> "tool_1"[label=" Broadcaster: default_authority\nAverage rate: 14.487\nBuffer length: 4.97\nMost recent transform: 1765365333.643742\nOldest transform: 1765365328.673742\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1765365333.6503322"[ shape=plaintext ] ;
+}->"world";
+}

@@ -183,6 +183,7 @@ void jointstate_callback(const void * msgin)
 
 
     //update stepper position
+  
     float pos_rad = msg->position.data[0];
 
     // Convert radians to steps:

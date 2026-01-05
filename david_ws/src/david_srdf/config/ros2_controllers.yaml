@@ -23,7 +23,9 @@ david_arm_controller:
       - position
     state_interfaces:
       - position
+
     publish_joint_trajectory: true
+
 
 # # Constraints for safe motion execution
 # constraints:

@@ -8,6 +8,11 @@ import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 import json
 
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RESET = "\033[0m"
+
 
 MODEL_PATH = "/home/zajac/Documents/David/vosk-model-small-en-us-0.15"
 q = queue.Queue()
@@ -57,6 +62,7 @@ commands = {
     "pitch":        lambda n: {"pitch": n},
     "pitch minus":  lambda n: {"pitch":-n},
     "roll":         lambda n: {"roll":  n},
+    "role":         lambda n: {"roll":  n},
     "roll minus":   lambda n: {"roll": -n},
     "yaw":          lambda n: {"yaw":   n},
     "yaw minus":    lambda n: {"yaw":  -n},
@@ -131,7 +137,7 @@ class VoiceNode(Node):
             if not text:
                 return
 
-            self.get_logger().info(f"Recognized: {text}")
+            self.get_logger().info(f"{YELLOW} Recognized: {GREEN}{text}{RESET}")
 
             cmd = parse_command(text)
             
@@ -152,7 +158,7 @@ class VoiceNode(Node):
                     twist.angular.z = float(cmd["yaw"])
 
                 self.publisher.publish(twist)
-                self.get_logger().info(f"Published command: {twist}")
+                self.get_logger().info(f"{RED}Published command: {twist}")
 
 
 def main(args=None):

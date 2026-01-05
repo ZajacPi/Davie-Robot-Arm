@@ -4,20 +4,15 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
-#include <geometry_msgs/msg/transform_stamped.hpp>
-
 class SimpleMotionNode : public rclcpp::Node
 {
 public:
     SimpleMotionNode()
-        : Node("simple_motion_node"),
-          tf_buffer_(this->get_clock()),
-          tf_listener_(tf_buffer_)
+        : Node("simple_motion_node")
     {
         RCLCPP_INFO(this->get_logger(), "SimpleMotionNode created.");
 
+        // Create a timer to initialize MoveIt AFTER the node is fully constructed
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(500),
             std::bind(&SimpleMotionNode::initialize_moveit, this)
@@ -27,9 +22,12 @@ public:
 private:
     void initialize_moveit()
     {
+        // Run this only once
         timer_->cancel();
+
         RCLCPP_INFO(this->get_logger(), "Initializing MoveIt interfaces...");
 
+        // SAFE: now shared_from_this() is valid
         move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
             shared_from_this(),
             "david_arm"
@@ -41,62 +39,33 @@ private:
         move_group_->setPlanningTime(5.0);
         move_group_->setPoseReferenceFrame("base_link");
 
-        // --- Read TCP position via tf ---
-        try {
-            auto tf_stamped = tf_buffer_.lookupTransform(
-                "base_link",   // reference frame
-                "tool_1",      // target frame
-                tf2::TimePointZero
-            );
-
-            RCLCPP_INFO(this->get_logger(),
-                "TCP Position: x=%.3f y=%.3f z=%.3f",
-                tf_stamped.transform.translation.x,
-                tf_stamped.transform.translation.y,
-                tf_stamped.transform.translation.z
-            );
-
-            RCLCPP_INFO(this->get_logger(),
-                "TCP Orientation: x=%.3f y=%.3f z=%.3f w=%.3f",
-                tf_stamped.transform.rotation.x,
-                tf_stamped.transform.rotation.y,
-                tf_stamped.transform.rotation.z,
-                tf_stamped.transform.rotation.w
-            );
-
-        } catch (const tf2::TransformException & ex) {
-            RCLCPP_WARN(this->get_logger(), "Could not get TCP transform: %s", ex.what());
-        }
-
-        // --- Example target pose (10 mm lower in z) ---
+        // // ---- Target pose ----
         geometry_msgs::msg::Pose target_pose;
         target_pose.position.x = 0.0;
         target_pose.position.y = 0.096;
-        target_pose.position.z = 0.35;  // 10 mm lower
-        target_pose.orientation.w = 1.0;
+        target_pose.position.z = 0.36;
 
         move_group_->setPoseTarget(target_pose);
 
+        // // ---- Plan ----
         moveit::planning_interface::MoveGroupInterface::Plan plan;
         auto result = move_group_->plan(plan);
 
         if (result.val == moveit::core::MoveItErrorCode::SUCCESS)
         {
-            RCLCPP_INFO(this->get_logger(), "Going to target pose");
+            RCLCPP_INFO(this->get_logger(), "Planning succeeded. Executing...");
             move_group_->execute(plan);
         }
         else
         {
-            RCLCPP_ERROR(this->get_logger(), "Failed to plan to target pose");
+            RCLCPP_ERROR(this->get_logger(), "Planning failed!");
         }
+
     }
 
     rclcpp::TimerBase::SharedPtr timer_;
     std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
     std::shared_ptr<moveit::planning_interface::PlanningSceneInterface> planning_scene_interface_;
-
-    tf2_ros::Buffer tf_buffer_;
-    tf2_ros::TransformListener tf_listener_;
 };
 
 int main(int argc, char **argv)
