@@ -55,17 +55,20 @@ def text2int(textnum, numwords={}):
 commands = {
     "go up":        lambda n: {"z":  n},
     "go down":      lambda n: {"z": -n},
-    "go left":      lambda n: {"y": -n},
-    "go right":     lambda n: {"y":  n},
-    "go forward":   lambda n: {"x":  n},
-    "go backward":  lambda n: {"x": -n},
+    "go left":      lambda n: {"x": -n},
+    "go right":     lambda n: {"x":  n},
+    "go forward":   lambda n: {"y":  n},
+    "go backward":  lambda n: {"y": -n},
+
     "pitch":        lambda n: {"pitch": n},
     "pitch minus":  lambda n: {"pitch":-n},
     "roll":         lambda n: {"roll":  n},
     "role":         lambda n: {"roll":  n},
     "roll minus":   lambda n: {"roll": -n},
+    "role minus":   lambda n: {"roll": -n},
     "yaw":          lambda n: {"yaw":   n},
-    "yaw minus":    lambda n: {"yaw":  -n},
+    "your":         lambda n: {"yaw":  n},
+    "your minus":   lambda n: {"yaw": -n},
 }
 
 

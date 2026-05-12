@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<robot name="urdf6" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<material name="silver">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+<material name="purple">
+  <color rgba="0.400 0.000 0.200 1.000"/>
+</material>
+<material name="white">
+  <color rgba="0.800 0.800 0.850 1.000"/>
+</material>
+<material name="black">
+  <color rgba="0.100 0.100 0.100 1.000"/>
+</material>
+
+
+</robot>

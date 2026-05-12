@@ -58,8 +58,8 @@
 const int FEETECH_MIN_US = 500;   
 const int FEETECH_MAX_US = 2500;  
 
-const int TOWERPRO_MIN_US = 1000;   
-const int TOWERPRO_MAX_US = 2000;  
+const int TOWERPRO_MIN_US = 600;   
+const int TOWERPRO_MAX_US = 2400;  
 
 // TIMING TABLE by channel
 int servo_min_us[5] = {
@@ -189,7 +189,7 @@ void jointstate_callback(const void * msgin)
     // Convert radians to steps:
     // adjust gear ratio, microstepping, etc.
     float steps_per_rev = stepsPerRevolution * microstepSetting;
-    long new_target = (long)(pos_rad * (steps_per_rev / (2.0f * M_PI)));
+    long new_target = (long)(-pos_rad * (steps_per_rev / (2.0f * M_PI)));
 
     target_stepper_position = new_target;
 

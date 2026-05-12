@@ -46,7 +46,7 @@ private:
 
         move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
             shared_from_this(),
-            "david_arm"
+            "david"
         );
 
         planning_scene_interface_ =
@@ -72,7 +72,7 @@ private:
         try {
             auto tf_stamped = tf_buffer_.lookupTransform(
                 "base_link", // reference frame
-                "tool_1",    // target frame
+                "calibration_rod_1",    // target frame
                 tf2::TimePointZero
             );
 
@@ -115,7 +115,15 @@ private:
 
         tf2::Quaternion q_orig, q_rot, q_new;
         tf2::fromMsg(current_pose.orientation, q_orig);
-        q_rot.setRPY(msg->angular.x, msg->angular.y, msg->angular.z);
+
+        double DEG2RAD = M_PI / 180.0;
+        double roll  = msg->angular.x * DEG2RAD;
+        double pitch = msg->angular.y * DEG2RAD;
+        double yaw   = msg->angular.z * DEG2RAD;
+        q_rot.setRPY(roll, pitch, yaw);
+
+        // q_rot.setRPY(msg->angular.x, msg->angular.y, msg->angular.z);
+
         q_new = q_orig * q_rot;
         target_pose.orientation = tf2::toMsg(q_new);
 

@@ -11,7 +11,7 @@ def generate_launch_description():
 
     # Path to david_srdf demo.launch.py
     david_demo_launch = os.path.join(
-        get_package_share_directory('david_srdf'),
+        get_package_share_directory('srdf6'),
         'launch',
         'demo.launch.py'
     )
